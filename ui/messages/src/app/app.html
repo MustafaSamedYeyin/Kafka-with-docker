@@ -1,0 +1,122 @@
+<div class="min-h-screen bg-gray-100 p-4">
+  <div class="max-w-7xl mx-auto">
+    <!-- Main Chat Container -->
+    <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+      
+      <!-- Producer Side -->
+      <div class="bg-white rounded-lg shadow-lg overflow-hidden">
+        <!-- Producer Header -->
+        <div class="bg-blue-500 text-white p-4">
+          <h2 class="text-xl font-semibold flex items-center">
+            <svg class="w-6 h-6 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8"></path>
+            </svg>
+            Producer
+          </h2>
+          <p class="text-blue-100 text-sm">Send messages to Kafka</p>
+        </div>
+
+        <!-- Producer Messages Area -->
+        <div class="h-96 overflow-y-auto p-4 space-y-3 chat-container">
+          <div *ngFor="let msg of producerMessages" 
+               class="bg-blue-50 border-l-4 border-blue-500 p-3 rounded message-item">
+            <div class="flex justify-between items-start">
+              <p class="text-gray-800">{{ msg.message }}</p>
+              <span class="text-xs text-gray-500 ml-2">{{ msg.timestamp | date:'HH:mm:ss' }}</span>
+            </div>
+            <div class="text-xs text-gray-500 mt-1">ID: {{ msg.id }}</div>
+          </div>
+          
+          <div *ngIf="producerMessages.length === 0" 
+               class="text-center text-gray-500 mt-20">
+            No messages sent yet
+          </div>
+        </div>
+
+        <!-- Producer Input -->
+        <div class="border-t p-4">
+          <form (ngSubmit)="produceMessage()" class="flex gap-2">
+            <input 
+              type="text" 
+              [(ngModel)]="producerMessage"
+              name="producerMessage"
+              placeholder="Type your message..."
+              class="flex-1 px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 message-input"
+              autocomplete="off">
+            <button 
+              type="submit"
+              [disabled]="!producerMessage.trim()"
+              class="px-6 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 disabled:bg-gray-300 disabled:cursor-not-allowed transition-colors send-button">
+              Send
+            </button>
+          </form>
+        </div>
+      </div>
+
+      <!-- Consumer Side -->
+      <div class="bg-white rounded-lg shadow-lg overflow-hidden">
+        <!-- Consumer Header -->
+        <div class="bg-green-500 text-white p-4">
+          <h2 class="text-xl font-semibold flex items-center">
+            <svg class="w-6 h-6 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 4H6a2 2 0 00-2 2v12a2 2 0 002 2h12a2 2 0 002-2V6a2 2 0 00-2-2h-2m-4-1v8m0 0l3-3m-3 3L9 8m-5 5h2.586a1 1 0 01.707.293l2.414 2.414a1 1 0 00.707.293H10"></path>
+            </svg>
+            Consumer
+          </h2>
+          <p class="text-green-100 text-sm">Received messages from Kafka</p>
+        </div>
+
+        <!-- Consumer Messages Area -->
+        <div class="h-96 overflow-y-auto p-4 space-y-3 chat-container">
+          <div *ngFor="let msg of consumerMessages" 
+               class="bg-green-50 border-l-4 border-green-500 p-3 rounded message-item">
+            <div class="flex justify-between items-start">
+              <p class="text-gray-800">{{ msg.message }}</p>
+              <span class="text-xs text-gray-500 ml-2">{{ msg.timestamp | date:'HH:mm:ss' }}</span>
+            </div>
+            <div class="text-xs text-gray-500 mt-1">ID: {{ msg.id }}</div>
+          </div>
+          
+          <div *ngIf="consumerMessages.length === 0" 
+               class="text-center text-gray-500 mt-20">
+            No messages received yet
+          </div>
+        </div>
+
+        <!-- Consumer Status -->
+        <div class="border-t p-4 bg-gray-50">
+          <div class="flex items-center justify-between">
+            <span class="text-sm text-gray-600">
+              Messages consumed: {{ consumerMessages.length }}
+            </span>
+            <div class="flex items-center">
+              <div class="w-2 h-2 bg-green-400 rounded-full animate-pulse mr-2"></div>
+              <span class="text-sm text-green-600">Listening for messages...</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Stats Section -->
+    <div class="mt-8 bg-white rounded-lg shadow-lg p-6">
+      <h3 class="text-lg font-semibold text-gray-800 mb-4">Message Statistics</h3>
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+        <div class="text-center p-4 bg-blue-50 rounded-lg">
+          <div class="text-2xl font-bold text-blue-600">{{ producerMessages.length }}</div>
+          <div class="text-sm text-gray-600">Messages Sent</div>
+        </div>
+        <div class="text-center p-4 bg-green-50 rounded-lg">
+          <div class="text-2xl font-bold text-green-600">{{ consumerMessages.length }}</div>
+          <div class="text-sm text-gray-600">Messages Received</div>
+        </div>
+        <div class="text-center p-4 bg-purple-50 rounded-lg">
+          <div class="text-2xl font-bold text-purple-600">
+            {{ producerMessages.length - consumerMessages.length }}
+          </div>
+          <div class="text-sm text-gray-600">Messages in Transit</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
